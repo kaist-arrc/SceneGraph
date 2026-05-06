@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/scenegraph.schema.json",
+  "title": "SceneGraph",
+  "description": "A proposal for a multi-layer scene graph schema covering geometry, function, semantics, and affordances.",
+  "type": "object",
+  "required": ["schema", "version", "metadata", "nodes", "edges"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "scenegraph"
+    },
+    "version": {
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+    "layers": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "geometry": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "functional": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "semantic": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "affordance": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "units": {
+          "type": "string",
+          "examples": ["meter", "centimeter", "millimeter"]
+        },
+        "coordinate_system": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "handedness": {
+              "enum": ["left", "right"]
+            },
+            "up_axis": {
+              "enum": ["X", "Y", "Z"]
+            }
+          }
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "required": ["id", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "type": "string",
+          "examples": ["scene", "object", "part", "region", "agent", "state", "action"]
+        },
+        "name": {
+          "type": "string"
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/layer"
+          },
+          "uniqueItems": true
+        },
+        "properties": {
+          "$ref": "#/$defs/layerProperties"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "required": ["id", "type", "source", "target", "layer"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/id"
+        },
+        "target": {
+          "$ref": "#/$defs/id"
+        },
+        "layer": {
+          "$ref": "#/$defs/layer"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "layerProperties": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "geometry": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "functional": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "semantic": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "affordance": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string",
+          "examples": ["manual", "sensor", "inference", "import"]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "layer": {
+      "enum": ["geometry", "functional", "semantic", "affordance"]
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_.:-]*$"
+    }
+  }
+}

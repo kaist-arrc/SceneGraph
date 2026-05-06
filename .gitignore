@@ -1,0 +1,15 @@
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Generated outputs
+dist/
+build/
+coverage/
+
+# Local dependency folders
+node_modules/
+.venv/
+__pycache__/

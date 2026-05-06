@@ -1,0 +1,255 @@
+{
+  "schema": "scenegraph",
+  "version": "0.1.0",
+  "metadata": {
+    "name": "Small room example",
+    "description": "A minimal scene showing geometry, functional, semantic, and affordance graph layers.",
+    "author": "SceneGraph contributors",
+    "created_at": "2026-05-06T00:00:00Z",
+    "units": "meter",
+    "coordinate_system": {
+      "handedness": "right",
+      "up_axis": "Y"
+    }
+  },
+  "nodes": [
+    {
+      "id": "room_01",
+      "type": "scene",
+      "name": "Room",
+      "layers": ["geometry", "semantic"],
+      "properties": {
+        "geometry": {
+          "bounds": {
+            "type": "box",
+            "size": [4.0, 2.8, 3.5]
+          }
+        },
+        "semantic": {
+          "category": "room",
+          "attributes": ["indoor"]
+        }
+      }
+    },
+    {
+      "id": "door_01",
+      "type": "object",
+      "name": "Door",
+      "layers": ["geometry", "functional", "semantic", "affordance"],
+      "properties": {
+        "geometry": {
+          "transform": {
+            "translation": [0.0, 1.0, -1.75],
+            "rotation_xyzw": [0.0, 0.0, 0.0, 1.0],
+            "scale": [1.0, 1.0, 1.0]
+          },
+          "bounds": {
+            "type": "box",
+            "size": [0.9, 2.0, 0.08]
+          }
+        },
+        "semantic": {
+          "category": "door",
+          "attributes": ["hinged", "entry"]
+        },
+        "functional": {
+          "state": {
+            "open": false,
+            "locked": false
+          },
+          "mechanism": "hinge"
+        },
+        "affordance": {
+          "affordances": [
+            {
+              "action": "open",
+              "actor": "human",
+              "preconditions": ["door_01.functional.state.locked == false"],
+              "effects": ["door_01.functional.state.open = true"]
+            },
+            {
+              "action": "close",
+              "actor": "human",
+              "preconditions": ["door_01.functional.state.open == true"],
+              "effects": ["door_01.functional.state.open = false"]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "handle_01",
+      "type": "part",
+      "name": "Door handle",
+      "layers": ["geometry", "functional", "semantic", "affordance"],
+      "properties": {
+        "geometry": {
+          "transform": {
+            "translation": [0.35, 1.05, -1.7],
+            "rotation_xyzw": [0.0, 0.0, 0.0, 1.0],
+            "scale": [1.0, 1.0, 1.0]
+          },
+          "primitive": {
+            "type": "cylinder",
+            "radius": 0.03,
+            "length": 0.16
+          }
+        },
+        "semantic": {
+          "category": "handle"
+        },
+        "functional": {
+          "function": "latch_control"
+        },
+        "affordance": {
+          "interaction_regions": [
+            {
+              "type": "grasp_region",
+              "shape": "cylinder"
+            }
+          ],
+          "affordances": [
+            {
+              "action": "grasp",
+              "actor": "human"
+            },
+            {
+              "action": "turn",
+              "actor": "human",
+              "effects": ["door_01.functional.state.latched = false"]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "table_01",
+      "type": "object",
+      "name": "Table",
+      "layers": ["geometry", "semantic", "affordance"],
+      "properties": {
+        "geometry": {
+          "transform": {
+            "translation": [0.0, 0.75, 0.0],
+            "rotation_xyzw": [0.0, 0.0, 0.0, 1.0],
+            "scale": [1.0, 1.0, 1.0]
+          },
+          "bounds": {
+            "type": "box",
+            "size": [1.2, 0.75, 0.8]
+          }
+        },
+        "semantic": {
+          "category": "table",
+          "attributes": ["furniture", "horizontal_surface"]
+        },
+        "affordance": {
+          "affordances": [
+            {
+              "action": "place_object_on",
+              "actor": "human",
+              "interaction_regions": ["tabletop_01"]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "tabletop_01",
+      "type": "region",
+      "name": "Tabletop",
+      "layers": ["geometry", "semantic", "affordance"],
+      "properties": {
+        "geometry": {
+          "bounds": {
+            "type": "box",
+            "size": [1.2, 0.04, 0.8]
+          }
+        },
+        "semantic": {
+          "category": "support_surface"
+        },
+        "affordance": {
+          "affordances": [
+            {
+              "action": "support",
+              "actor": "object"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_room_contains_door",
+      "type": "contains",
+      "source": "room_01",
+      "target": "door_01",
+      "layer": "geometry"
+    },
+    {
+      "id": "edge_room_contains_table",
+      "type": "contains",
+      "source": "room_01",
+      "target": "table_01",
+      "layer": "geometry"
+    },
+    {
+      "id": "edge_handle_part_of_door",
+      "type": "part_of",
+      "source": "handle_01",
+      "target": "door_01",
+      "layer": "semantic"
+    },
+    {
+      "id": "edge_handle_controls_door_latch",
+      "type": "controls",
+      "source": "handle_01",
+      "target": "door_01",
+      "layer": "functional"
+    },
+    {
+      "id": "edge_door_affords_open",
+      "type": "affords",
+      "source": "door_01",
+      "target": "handle_01",
+      "layer": "affordance",
+      "properties": {
+        "action": "open"
+      }
+    },
+    {
+      "id": "edge_tabletop_part_of_table",
+      "type": "part_of",
+      "source": "tabletop_01",
+      "target": "table_01",
+      "layer": "semantic"
+    },
+    {
+      "id": "edge_tabletop_supports_objects",
+      "type": "supports",
+      "source": "tabletop_01",
+      "target": "table_01",
+      "layer": "affordance",
+      "properties": {
+        "action": "place_object_on"
+      }
+    }
+  ],
+  "layers": {
+    "geometry": {
+      "default_coordinate_space": "world"
+    },
+    "functional": {
+      "state_model": "open_world"
+    },
+    "semantic": {
+      "ontology": "proposal.local"
+    },
+    "affordance": {
+      "actor_model": "human_adult"
+    }
+  },
+  "extensions": {}
+}
