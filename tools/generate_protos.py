@@ -28,6 +28,13 @@ def build_command(out_dir: Path, languages: list[str]) -> list[str]:
     if include_dir is not None:
         include_args.extend(["-I", str(include_dir)])
 
+    if "cpp" in languages and protoc is None:
+        raise RuntimeError(
+            "C++ generation requires the protoc compiler. grpcio-tools can "
+            "generate Python bindings, but it does not provide protoc-gen-cpp. "
+            "Install protoc, or run with `--language python`."
+        )
+
     if protoc:
         command = [protoc]
     else:
@@ -37,7 +44,6 @@ def build_command(out_dir: Path, languages: list[str]) -> list[str]:
                 "`python -m pip install grpcio-tools`."
             )
         command = [sys.executable, "-m", "grpc_tools.protoc"]
-        include_args.extend(["-I", str(include_dir)])
 
     for language in languages:
         language_out = out_dir / language

@@ -45,9 +45,25 @@ python tools/generate_protos.py --language cpp
 
 ## Required Tooling
 
-The script first tries to use `protoc` if it is installed.
+For Python-only generation, the script can use Python's `grpcio-tools` package:
 
-If `protoc` is not installed, it falls back to Python's `grpcio-tools` package:
+```powershell
+python -m pip install -r requirements-dev.txt
+python tools/generate_protos.py --language python
+```
+
+For C++ generation, install the Protobuf compiler, `protoc`.
+
+On Ubuntu:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y protobuf-compiler
+```
+
+On Windows, install `protoc` and make sure it is available on `PATH`.
+
+Then generate both C++ and Python:
 
 ```powershell
 python -m pip install -r requirements-dev.txt
@@ -111,7 +127,8 @@ On pushes to `main`, pull requests, and manual runs, the workflow:
 
 1. installs Python
 2. installs `requirements-dev.txt`
-3. checks the generator script syntax
-4. generates Python and C++ Protobuf bindings
-5. verifies the expected generated files exist
-6. uploads the generated bindings as a short-lived CI artifact
+3. installs `protobuf-compiler` for C++ generation
+4. checks the generator script syntax
+5. generates Python and C++ Protobuf bindings
+6. verifies the expected generated files exist
+7. uploads the generated bindings as a short-lived CI artifact
