@@ -111,6 +111,54 @@ door->mutable_properties()->mutable_semantic()->CopyFrom(StructFromJson(R"json({
 })json"));
 ```
 
+## C#
+
+Build:
+
+```bash
+dotnet build examples/csharp/SceneGraph.Example.csproj -p:GeneratedCSharpDir="$PWD/generated/csharp"
+```
+
+Run:
+
+```bash
+dotnet run --project examples/csharp/SceneGraph.Example.csproj -p:GeneratedCSharpDir="$PWD/generated/csharp" -- generated/examples
+```
+
+The example writes:
+
+```text
+generated/examples/room_from_csharp.scenegraph.pb
+generated/examples/room_from_csharp.scenegraph.pb.json
+```
+
+The C# example uses the namespace configured in the proto:
+
+```proto
+option csharp_namespace = "SceneGraph.V1";
+```
+
+Application code can then use a short alias:
+
+```csharp
+using Sg = SceneGraph.V1;
+
+var door = new Sg.Node
+{
+    Id = "door_01",
+    Type = "object",
+    Name = "Door",
+    Properties = new Sg.LayerProperties
+    {
+        Geometry = new Sg.GeometryProperties
+        {
+            Pose = Pose("world", 0.0, 1.0, -1.75),
+            Bounds = BoxBounds(0.9, 2.0, 0.08)
+        }
+    }
+};
+```
+
 ## Recommendation
 
 Use generated Protobuf classes at system boundaries:

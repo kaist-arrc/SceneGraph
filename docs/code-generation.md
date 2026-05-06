@@ -1,6 +1,6 @@
 # Code Generation
 
-SceneGraph can use Protobuf as a shared runtime contract for C++ and Python.
+SceneGraph can use Protobuf as a shared runtime contract for C++, Python, and C#.
 The source file is:
 
 ```text
@@ -10,7 +10,7 @@ proto/scenegraph.proto
 Generated files should be treated as build artifacts. By default they are
 written to `generated/`, which is ignored by Git.
 
-## Generate Python And C++
+## Generate Python, C++, And C#
 
 Run:
 
@@ -25,6 +25,8 @@ generated/
 |-- cpp/
 |   |-- scenegraph.pb.cc
 |   `-- scenegraph.pb.h
+|-- csharp/
+|   `-- Scenegraph.g.cs
 `-- python/
     `-- scenegraph_pb2.py
 ```
@@ -43,6 +45,12 @@ C++ only:
 python tools/generate_protos.py --language cpp
 ```
 
+C# only:
+
+```powershell
+python tools/generate_protos.py --language csharp
+```
+
 ## Required Tooling
 
 For Python-only generation, the script can use Python's `grpcio-tools` package:
@@ -52,7 +60,7 @@ python -m pip install -r requirements-dev.txt
 python tools/generate_protos.py --language python
 ```
 
-For C++ generation, install the Protobuf compiler, `protoc`.
+For C++ and C# generation, install the Protobuf compiler, `protoc`.
 
 On Ubuntu:
 
@@ -63,7 +71,7 @@ sudo apt-get install -y cmake g++ libprotobuf-dev protobuf-compiler
 
 On Windows, install `protoc` and make sure it is available on `PATH`.
 
-Then generate both C++ and Python:
+Then generate C++, Python, and C#:
 
 ```powershell
 python -m pip install -r requirements-dev.txt
@@ -109,11 +117,54 @@ node->add_layers(scenegraph::v1::LAYER_GEOMETRY);
 node->add_layers(scenegraph::v1::LAYER_SEMANTIC);
 ```
 
+## C# Usage
+
+After generation, include `generated/csharp/Scenegraph.g.cs` in a C# project and
+reference the `Google.Protobuf` NuGet package.
+
+The proto sets:
+
+```proto
+option csharp_namespace = "SceneGraph.V1";
+```
+
+Example:
+
+```csharp
+using Google.Protobuf;
+using Sg = SceneGraph.V1;
+
+var scene = new Sg.SceneGraph
+{
+    Schema = "scenegraph",
+    Version = "0.1.0",
+    Metadata = new Sg.Metadata
+    {
+        Name = "C# scene",
+        Units = "meter",
+        CoordinateSystem = new Sg.CoordinateSystem
+        {
+            Handedness = Sg.Handedness.Right,
+            UpAxis = Sg.Axis.Y
+        }
+    }
+};
+
+scene.Nodes.Add(new Sg.Node
+{
+    Id = "door_01",
+    Type = "object",
+    Name = "Door"
+});
+
+File.WriteAllBytes("scene.scenegraph.pb", scene.ToByteArray());
+```
+
 ## Recommended Workflow
 
 1. Edit `proto/scenegraph.proto`.
 2. Run `python tools/generate_protos.py`.
-3. Build or test the Python/C++ code that consumes the generated files.
+3. Build or test the Python/C++/C# code that consumes the generated files.
 4. Commit the `.proto` change and docs/examples.
 
 Generated files can be committed later if packaging needs require it, but during
@@ -126,11 +177,13 @@ The repository includes `.github/workflows/protobuf.yml`.
 On pushes to `main`, pull requests, and manual runs, the workflow:
 
 1. installs Python
-2. installs `requirements-dev.txt`
-3. installs Protobuf and C++ build tools
-4. checks the generator script syntax
-5. generates Python and C++ Protobuf bindings
-6. verifies the expected generated files exist
-7. runs the Python usage example
-8. builds and runs the C++ usage example
-9. uploads the generated bindings and example outputs as a short-lived CI artifact
+2. installs .NET
+3. installs `requirements-dev.txt`
+4. installs Protobuf and C++ build tools
+5. checks the generator script syntax
+6. generates Python, C++, and C# Protobuf bindings
+7. verifies the expected generated files exist
+8. runs the Python usage example
+9. builds and runs the C++ usage example
+10. builds and runs the C# usage example
+11. uploads the generated bindings and example outputs as a short-lived CI artifact

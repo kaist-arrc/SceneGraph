@@ -4,6 +4,8 @@ package scenegraph.v1;
 
 import "google/protobuf/struct.proto";
 
+option csharp_namespace = "SceneGraph.V1";
+
 message SceneGraph {
   string schema = 1;
   string version = 2;

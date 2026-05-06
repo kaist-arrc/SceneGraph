@@ -64,6 +64,9 @@ flowchart TB
 |   |-- cpp/
 |   |   |-- CMakeLists.txt
 |   |   `-- build_room.cc
+|   |-- csharp/
+|   |   |-- Program.cs
+|   |   `-- SceneGraph.Example.csproj
 |   |-- python/
 |   |   `-- build_room.py
 |   `-- room.scenegraph.json
@@ -93,7 +96,7 @@ The schema should stay small at the core and allow domain-specific extensions
 for robotics, simulation, digital twins, games, spatial AI, CAD, and embodied
 agent planning.
 
-For runtime use in C++ and Python, the Protobuf contract in
+For runtime use in C++, Python, and C#, the Protobuf contract in
 [proto/scenegraph.proto](proto/scenegraph.proto) is the main target. Geometry is
 typed there with frame-relative pose, quaternion rotation, bounds, primitives,
 and mesh references, while functional, semantic, and affordance properties remain
@@ -120,7 +123,7 @@ Read:
 Then compare the JSON schema in [schema/scenegraph.schema.json](schema/scenegraph.schema.json)
 with the sample scene in [examples/room.scenegraph.json](examples/room.scenegraph.json).
 
-For C++ and Python runtime use, generate Protobuf bindings from
+For C++, Python, and C# runtime use, generate Protobuf bindings from
 [proto/scenegraph.proto](proto/scenegraph.proto):
 
 ```powershell

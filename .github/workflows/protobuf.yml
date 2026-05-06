@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   generate:
-    name: Generate C++ and Python bindings
+    name: Generate C++, Python, and C# bindings
     runs-on: ubuntu-latest
 
     steps:
@@ -26,10 +26,15 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-dev.txt
 
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "8.0.x"
+
       - name: Install generator dependencies
         run: python -m pip install -r requirements-dev.txt
 
-      - name: Install protoc for C++ generation
+      - name: Install protoc for C++ and C# generation
         run: |
           sudo apt-get update
           sudo apt-get install -y cmake g++ libprotobuf-dev protobuf-compiler
@@ -45,6 +50,7 @@ jobs:
           test -f generated/python/scenegraph_pb2.py
           test -f generated/cpp/scenegraph.pb.h
           test -f generated/cpp/scenegraph.pb.cc
+          test -f generated/csharp/Scenegraph.g.cs
 
       - name: Run Python usage example
         run: python examples/python/build_room.py
@@ -59,6 +65,15 @@ jobs:
           ./build/examples-cpp/build_room generated/examples
           test -f generated/examples/room_from_cpp.scenegraph.pb
           test -f generated/examples/room_from_cpp.scenegraph.pb.json
+
+      - name: Build C# usage example
+        run: dotnet build examples/csharp/SceneGraph.Example.csproj -p:GeneratedCSharpDir="$PWD/generated/csharp"
+
+      - name: Run C# usage example
+        run: |
+          dotnet run --project examples/csharp/SceneGraph.Example.csproj -p:GeneratedCSharpDir="$PWD/generated/csharp" -- generated/examples
+          test -f generated/examples/room_from_csharp.scenegraph.pb
+          test -f generated/examples/room_from_csharp.scenegraph.pb.json
 
       - name: Upload generated bindings
         uses: actions/upload-artifact@v7

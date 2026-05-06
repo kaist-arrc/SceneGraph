@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratedCSharpDir Condition="'$(GeneratedCSharpDir)' == ''">../../generated/csharp</GeneratedCSharpDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="$(GeneratedCSharpDir)/Scenegraph.g.cs" Link="Generated/Scenegraph.g.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.21.12" />
+  </ItemGroup>
+</Project>

@@ -28,11 +28,15 @@ def build_command(out_dir: Path, languages: list[str]) -> list[str]:
     if include_dir is not None:
         include_args.extend(["-I", str(include_dir)])
 
-    if "cpp" in languages and protoc is None:
+    protoc_only_languages = {"cpp", "csharp"}
+    requested_protoc_only_languages = protoc_only_languages.intersection(languages)
+    if requested_protoc_only_languages and protoc is None:
+        language_list = ", ".join(sorted(requested_protoc_only_languages))
         raise RuntimeError(
-            "C++ generation requires the protoc compiler. grpcio-tools can "
-            "generate Python bindings, but it does not provide protoc-gen-cpp. "
-            "Install protoc, or run with `--language python`."
+            f"{language_list} generation requires the protoc compiler. "
+            "grpcio-tools can generate Python bindings, but it does not "
+            "provide the C++ or C# generators. Install protoc, or run with "
+            "`--language python`."
         )
 
     if protoc:
@@ -53,6 +57,9 @@ def build_command(out_dir: Path, languages: list[str]) -> list[str]:
             include_args.append(f"--python_out={language_out}")
         elif language == "cpp":
             include_args.append(f"--cpp_out={language_out}")
+        elif language == "csharp":
+            include_args.append(f"--csharp_out={language_out}")
+            include_args.append("--csharp_opt=file_extension=.g.cs")
         else:
             raise ValueError(f"Unsupported language: {language}")
 
@@ -70,13 +77,13 @@ def main() -> int:
     parser.add_argument(
         "--language",
         action="append",
-        choices=["python", "cpp"],
+        choices=["python", "cpp", "csharp"],
         dest="languages",
-        help="Language to generate. Can be passed multiple times. Defaults to both.",
+        help="Language to generate. Can be passed multiple times. Defaults to all.",
     )
     args = parser.parse_args()
 
-    languages = args.languages or ["python", "cpp"]
+    languages = args.languages or ["python", "cpp", "csharp"]
     command = build_command(args.out.resolve(), languages)
     print("Running:", " ".join(command))
     subprocess.run(command, cwd=ROOT, check=True)

@@ -92,5 +92,5 @@ Only geometry has been promoted to typed messages. Functional, semantic, and
 affordance properties still use `google.protobuf.Struct` while their vocabularies
 are evolving.
 
-This gives C++ and Python strong types for pose math while keeping the rest of
-the proposal easy to iterate.
+This gives C++, Python, and C# strong types for pose math while keeping the rest
+of the proposal easy to iterate.
