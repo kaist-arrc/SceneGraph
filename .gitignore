@@ -8,6 +8,7 @@ Thumbs.db
 dist/
 build/
 coverage/
+generated/
 
 # Local dependency folders
 node_modules/

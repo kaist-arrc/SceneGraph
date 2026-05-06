@@ -52,6 +52,7 @@ flowchart TB
 .
 |-- README.md
 |-- docs/
+|   |-- code-generation.md
 |   |-- design-principles.md
 |   |-- graph-layers.md
 |   |-- open-questions.md
@@ -59,8 +60,16 @@ flowchart TB
 |   `-- visualization.md
 |-- examples/
 |   `-- room.scenegraph.json
-`-- schema/
-    `-- scenegraph.schema.json
+|-- .github/
+|   `-- workflows/
+|       `-- protobuf.yml
+|-- proto/
+|   `-- scenegraph.proto
+|-- requirements-dev.txt
+|-- schema/
+|   `-- scenegraph.schema.json
+`-- tools/
+    `-- generate_protos.py
 ```
 
 ## Core Idea
@@ -90,7 +99,15 @@ Read:
 2. [Graph Layers](docs/graph-layers.md)
 3. [Schema Overview](docs/schema-overview.md)
 4. [Visualization](docs/visualization.md)
-5. [Open Questions](docs/open-questions.md)
+5. [Code Generation](docs/code-generation.md)
+6. [Open Questions](docs/open-questions.md)
 
 Then compare the JSON schema in [schema/scenegraph.schema.json](schema/scenegraph.schema.json)
 with the sample scene in [examples/room.scenegraph.json](examples/room.scenegraph.json).
+
+For C++ and Python runtime use, generate Protobuf bindings from
+[proto/scenegraph.proto](proto/scenegraph.proto):
+
+```powershell
+python tools/generate_protos.py
+```

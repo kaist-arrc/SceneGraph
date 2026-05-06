@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package scenegraph.v1;
+
+import "google/protobuf/struct.proto";
+
+message SceneGraph {
+  string schema = 1;
+  string version = 2;
+  Metadata metadata = 3;
+  repeated Node nodes = 4;
+  repeated Edge edges = 5;
+  map<string, google.protobuf.Struct> layers = 6;
+  google.protobuf.Struct extensions = 7;
+}
+
+message Metadata {
+  string name = 1;
+  string description = 2;
+  string author = 3;
+  string created_at = 4;
+  string units = 5;
+  CoordinateSystem coordinate_system = 6;
+  string source = 7;
+}
+
+message CoordinateSystem {
+  string handedness = 1;
+  string up_axis = 2;
+}
+
+message Node {
+  string id = 1;
+  string type = 2;
+  string name = 3;
+  repeated Layer layers = 4;
+  LayerProperties properties = 5;
+  Provenance provenance = 6;
+  google.protobuf.Struct extensions = 7;
+}
+
+message Edge {
+  string id = 1;
+  string type = 2;
+  string source = 3;
+  string target = 4;
+  Layer layer = 5;
+  google.protobuf.Struct properties = 6;
+  optional float confidence = 7;
+  Provenance provenance = 8;
+  google.protobuf.Struct extensions = 9;
+}
+
+message LayerProperties {
+  google.protobuf.Struct geometry = 1;
+  google.protobuf.Struct functional = 2;
+  google.protobuf.Struct semantic = 3;
+  google.protobuf.Struct affordance = 4;
+}
+
+message Provenance {
+  string source = 1;
+  string method = 2;
+  optional float confidence = 3;
+}
+
+enum Layer {
+  LAYER_UNSPECIFIED = 0;
+  LAYER_GEOMETRY = 1;
+  LAYER_FUNCTIONAL = 2;
+  LAYER_SEMANTIC = 3;
+  LAYER_AFFORDANCE = 4;
+}
