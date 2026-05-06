@@ -2,6 +2,11 @@
 
 This document describes the proposed top-level shape of a SceneGraph document.
 
+This page describes the human-readable JSON proposal. For the C++ and Python
+runtime contract, see the typed Protobuf schema in
+[`proto/scenegraph.proto`](../proto/scenegraph.proto), especially the geometry
+messages described in [Protobuf Geometry](protobuf-geometry.md).
+
 ## Top-Level Object
 
 ```json

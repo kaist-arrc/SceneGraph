@@ -58,7 +58,7 @@ On Ubuntu:
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y protobuf-compiler
+sudo apt-get install -y cmake g++ libprotobuf-dev protobuf-compiler
 ```
 
 On Windows, install `protoc` and make sure it is available on `PATH`.
@@ -127,8 +127,10 @@ On pushes to `main`, pull requests, and manual runs, the workflow:
 
 1. installs Python
 2. installs `requirements-dev.txt`
-3. installs `protobuf-compiler` for C++ generation
+3. installs Protobuf and C++ build tools
 4. checks the generator script syntax
 5. generates Python and C++ Protobuf bindings
 6. verifies the expected generated files exist
-7. uploads the generated bindings as a short-lived CI artifact
+7. runs the Python usage example
+8. builds and runs the C++ usage example
+9. uploads the generated bindings and example outputs as a short-lived CI artifact

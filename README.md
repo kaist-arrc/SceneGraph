@@ -56,9 +56,16 @@ flowchart TB
 |   |-- design-principles.md
 |   |-- graph-layers.md
 |   |-- open-questions.md
+|   |-- protobuf-geometry.md
 |   |-- schema-overview.md
+|   |-- usage-examples.md
 |   `-- visualization.md
 |-- examples/
+|   |-- cpp/
+|   |   |-- CMakeLists.txt
+|   |   `-- build_room.cc
+|   |-- python/
+|   |   `-- build_room.py
 |   `-- room.scenegraph.json
 |-- .github/
 |   `-- workflows/
@@ -86,6 +93,12 @@ The schema should stay small at the core and allow domain-specific extensions
 for robotics, simulation, digital twins, games, spatial AI, CAD, and embodied
 agent planning.
 
+For runtime use in C++ and Python, the Protobuf contract in
+[proto/scenegraph.proto](proto/scenegraph.proto) is the main target. Geometry is
+typed there with frame-relative pose, quaternion rotation, bounds, primitives,
+and mesh references, while functional, semantic, and affordance properties remain
+flexible during early schema design.
+
 ## Status
 
 This repository is an early proposal. The current files are intended to support
@@ -99,8 +112,10 @@ Read:
 2. [Graph Layers](docs/graph-layers.md)
 3. [Schema Overview](docs/schema-overview.md)
 4. [Visualization](docs/visualization.md)
-5. [Code Generation](docs/code-generation.md)
-6. [Open Questions](docs/open-questions.md)
+5. [Protobuf Geometry](docs/protobuf-geometry.md)
+6. [Code Generation](docs/code-generation.md)
+7. [Usage Examples](docs/usage-examples.md)
+8. [Open Questions](docs/open-questions.md)
 
 Then compare the JSON schema in [schema/scenegraph.schema.json](schema/scenegraph.schema.json)
 with the sample scene in [examples/room.scenegraph.json](examples/room.scenegraph.json).

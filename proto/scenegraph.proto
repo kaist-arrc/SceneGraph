@@ -25,8 +25,8 @@ message Metadata {
 }
 
 message CoordinateSystem {
-  string handedness = 1;
-  string up_axis = 2;
+  Handedness handedness = 1;
+  Axis up_axis = 2;
 }
 
 message Node {
@@ -52,10 +52,86 @@ message Edge {
 }
 
 message LayerProperties {
-  google.protobuf.Struct geometry = 1;
+  GeometryProperties geometry = 1;
   google.protobuf.Struct functional = 2;
   google.protobuf.Struct semantic = 3;
   google.protobuf.Struct affordance = 4;
+}
+
+message GeometryProperties {
+  Pose pose = 1;
+  Bounds bounds = 2;
+  Primitive primitive = 3;
+  string mesh_uri = 4;
+  google.protobuf.Struct extensions = 15;
+}
+
+message Pose {
+  string frame_id = 1;
+  Transform transform = 2;
+}
+
+message Transform {
+  Vec3 translation = 1;
+  Quaternion rotation = 2;
+  Vec3 scale = 3;
+}
+
+message Vec3 {
+  double x = 1;
+  double y = 2;
+  double z = 3;
+}
+
+message Quaternion {
+  double x = 1;
+  double y = 2;
+  double z = 3;
+  double w = 4;
+}
+
+message Bounds {
+  oneof shape {
+    BoxBounds box = 1;
+    SphereBounds sphere = 2;
+    CapsuleBounds capsule = 3;
+  }
+}
+
+message BoxBounds {
+  Vec3 size = 1;
+}
+
+message SphereBounds {
+  double radius = 1;
+}
+
+message CapsuleBounds {
+  double radius = 1;
+  double height = 2;
+  Axis axis = 3;
+}
+
+message Primitive {
+  oneof shape {
+    BoxPrimitive box = 1;
+    SpherePrimitive sphere = 2;
+    CylinderPrimitive cylinder = 3;
+  }
+}
+
+message BoxPrimitive {
+  Vec3 size = 1;
+}
+
+message SpherePrimitive {
+  double radius = 1;
+}
+
+message CylinderPrimitive {
+  double radius = 1;
+  double length = 2;
+  Axis axis = 3;
 }
 
 message Provenance {
@@ -70,4 +146,17 @@ enum Layer {
   LAYER_FUNCTIONAL = 2;
   LAYER_SEMANTIC = 3;
   LAYER_AFFORDANCE = 4;
+}
+
+enum Handedness {
+  HANDEDNESS_UNSPECIFIED = 0;
+  HANDEDNESS_LEFT = 1;
+  HANDEDNESS_RIGHT = 2;
+}
+
+enum Axis {
+  AXIS_UNSPECIFIED = 0;
+  AXIS_X = 1;
+  AXIS_Y = 2;
+  AXIS_Z = 3;
 }

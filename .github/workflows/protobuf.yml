@@ -32,7 +32,7 @@ jobs:
       - name: Install protoc for C++ generation
         run: |
           sudo apt-get update
-          sudo apt-get install -y protobuf-compiler
+          sudo apt-get install -y cmake g++ libprotobuf-dev protobuf-compiler
 
       - name: Check generator syntax
         run: python -m py_compile tools/generate_protos.py
@@ -45,6 +45,20 @@ jobs:
           test -f generated/python/scenegraph_pb2.py
           test -f generated/cpp/scenegraph.pb.h
           test -f generated/cpp/scenegraph.pb.cc
+
+      - name: Run Python usage example
+        run: python examples/python/build_room.py
+
+      - name: Build C++ usage example
+        run: |
+          cmake -S examples/cpp -B build/examples-cpp -DGENERATED_CPP_DIR="$PWD/generated/cpp"
+          cmake --build build/examples-cpp
+
+      - name: Run C++ usage example
+        run: |
+          ./build/examples-cpp/build_room generated/examples
+          test -f generated/examples/room_from_cpp.scenegraph.pb
+          test -f generated/examples/room_from_cpp.scenegraph.pb.json
 
       - name: Upload generated bindings
         uses: actions/upload-artifact@v7
